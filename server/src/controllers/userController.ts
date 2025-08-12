@@ -15,14 +15,11 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
-  const { cognitoId } = req.params;
+  const { userId } = req.params;
   try {
     const user = await prisma.user.findUnique({
-      where: {
-        cognitoId: cognitoId,
-      },
+      where: { userId: Number(userId) },
     });
-
     res.json(user);
   } catch (error: any) {
     res
@@ -35,14 +32,12 @@ export const postUser = async (req: Request, res: Response) => {
   try {
     const {
       username,
-      cognitoId,
       profilePictureUrl = "i1.jpg",
       teamId = 1,
     } = req.body;
     const newUser = await prisma.user.create({
       data: {
         username,
-        cognitoId,
         profilePictureUrl,
         teamId,
       },
@@ -51,6 +46,6 @@ export const postUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: `Error retrieving users: ${error.message}` });
+      .json({ message: `Error creating user: ${error.message}` });
   }
 };

@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv"; // added
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") }); // ensure DATABASE_URL loaded when running from prisma dir
 const prisma = new PrismaClient();
 
 async function deleteAllData(orderedFileNames: string[]) {
@@ -44,7 +47,11 @@ async function main() {
 
     try {
       for (const data of jsonData) {
-        await model.create({ data });
+        const insertData: any = { ...data };
+        if (modelName === "user") {
+          delete insertData.cognitoId; // field removed from schema
+        }
+        await model.create({ data: insertData });
       }
       console.log(`Seeded ${modelName} with data from ${fileName}`);
     } catch (error) {

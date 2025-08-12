@@ -2,8 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSidebarCollapsed } from "@/state";
-import { useGetAuthUserQuery, useGetProjectsQuery } from "@/state/api";
-import { signOut } from "aws-amplify/auth";
+import { useGetProjectsQuery } from "@/state/api";
 import {
   AlertCircle,
   AlertOctagon,
@@ -37,16 +36,8 @@ const Sidebar = () => {
     (state) => state.global.isSidebarCollapsed,
   );
 
-  const { data: currentUser } = useGetAuthUserQuery({});
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  };
-  if (!currentUser) return null;
-  const currentUserDetails = currentUser?.userDetails;
+  // Static placeholder user
+  const currentUserDetails = { username: "Guest", profilePictureUrl: "" };
 
   const sidebarClassNames = `fixed flex flex-col h-[100%] justify-between shadow-xl
     transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white
@@ -82,7 +73,7 @@ const Sidebar = () => {
           />
           <div>
             <h3 className="text-md font-bold tracking-wide dark:text-gray-200">
-              EDROH TEAM
+              Fino TEAM
             </h3>
             <div className="mt-1 flex items-start gap-2">
               <LockIcon className="mt-[0.1rem] h-3 w-3 text-gray-500 dark:text-gray-400" />
@@ -179,12 +170,7 @@ const Sidebar = () => {
           <span className="mx-3 text-gray-800 dark:text-white">
             {currentUserDetails?.username}
           </span>
-          <button
-            className="self-start rounded bg-blue-400 px-4 py-2 text-xs font-bold text-white hover:bg-blue-500 md:block"
-            onClick={handleSignOut}
-          >
-            Sign out
-          </button>
+          {/* Sign out removed */}
         </div>
       </div>
     </div>
